@@ -39,8 +39,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double FORWARD_OFFSET = -4.976; // in; offset of the lateral wheel
 
     // use these to adjust for wheel radius differences
-    public static double X_MULTIPLIER = 1.0; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.0; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = .9870; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = .9926; // Multiplier in the Y direction
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
@@ -68,7 +68,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightRearMotor"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
-        frontEncoder.setDirection(Encoder.Direction.FORWARD);
+        frontEncoder.setDirection(Encoder.Direction.REVERSE);
         leftEncoder.setDirection(Encoder.Direction.REVERSE);
         rightEncoder.setDirection(Encoder.Direction.FORWARD);
     }
@@ -95,9 +95,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCorrectedVelocity()) * Y_MULTIPLIER,
-                encoderTicksToInches(rightEncoder.getCorrectedVelocity()) * Y_MULTIPLIER,
-                encoderTicksToInches(frontEncoder.getCorrectedVelocity()) * X_MULTIPLIER
+                encoderTicksToInches(leftEncoder.getCorrectedVelocity()) * X_MULTIPLIER,
+                encoderTicksToInches(rightEncoder.getCorrectedVelocity()) * X_MULTIPLIER,
+                encoderTicksToInches(frontEncoder.getCorrectedVelocity()) * Y_MULTIPLIER
         );
     }
 }
