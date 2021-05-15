@@ -7,10 +7,14 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -40,6 +44,18 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
+    public Encoder getLeftEncoder() {
+        return leftEncoder;
+    }
+
+    public Encoder getRightEncoder() {
+        return rightEncoder;
+    }
+
+    public Encoder getFrontEncoder() {
+        return frontEncoder;
+    }
+
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
@@ -48,13 +64,13 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         ));
 
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftFrontMotor"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightFrontMotor"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftRearMotor"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightRearMotor"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
         frontEncoder.setDirection(Encoder.Direction.FORWARD);
         leftEncoder.setDirection(Encoder.Direction.REVERSE);
-
+        rightEncoder.setDirection(Encoder.Direction.FORWARD);
     }
 
     public static double encoderTicksToInches(double ticks) {
@@ -79,9 +95,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getRawVelocity()) * X_MULTIPLIER,
-                encoderTicksToInches(rightEncoder.getRawVelocity()) * X_MULTIPLIER,
-                encoderTicksToInches(frontEncoder.getRawVelocity()) * Y_MULTIPLIER
+                encoderTicksToInches(leftEncoder.getCorrectedVelocity()) * Y_MULTIPLIER,
+                encoderTicksToInches(rightEncoder.getCorrectedVelocity()) * Y_MULTIPLIER,
+                encoderTicksToInches(frontEncoder.getCorrectedVelocity()) * X_MULTIPLIER
         );
     }
 }
