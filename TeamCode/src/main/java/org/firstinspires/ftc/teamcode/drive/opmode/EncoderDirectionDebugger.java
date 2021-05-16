@@ -28,6 +28,11 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
  */
 @TeleOp(group = "drive")
 public class EncoderDirectionDebugger extends LinearOpMode {
+
+    private double leftEncoderInitialPosition = 0;
+    private double rightEncoderInitialPosition = 0;
+    private double frontEncoderInitialPosition = 0;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -37,12 +42,16 @@ public class EncoderDirectionDebugger extends LinearOpMode {
         Encoder rightEncoder = localizer.getRightEncoder();
         Encoder frontEncoder = localizer.getFrontEncoder();
 
+        leftEncoderInitialPosition = leftEncoder.getCurrentPosition();
+        rightEncoderInitialPosition = rightEncoder.getCurrentPosition();
+        frontEncoderInitialPosition = frontEncoder.getCurrentPosition();
+
         waitForStart();
 
         while (!isStopRequested()) {
-            telemetry.addData("left encoder count ", leftEncoder.getCurrentPosition());
-            telemetry.addData("right encoder count ", rightEncoder.getCurrentPosition());
-            telemetry.addData("front/lateral encoder count ", frontEncoder.getCurrentPosition());
+            telemetry.addData("left encoder count ", leftEncoder.getCurrentPosition() - leftEncoderInitialPosition);
+            telemetry.addData("right encoder count ", rightEncoder.getCurrentPosition() - rightEncoderInitialPosition);
+            telemetry.addData("front/lateral encoder count ", frontEncoder.getCurrentPosition() - frontEncoderInitialPosition);
             telemetry.update();
         }
     }
